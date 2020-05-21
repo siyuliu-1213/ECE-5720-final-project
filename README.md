@@ -17,4 +17,4 @@ The code repository for Cornell ECE 5720 final project.
 <p>Run     : ./KMP_cuda</p>
 
 <h5>Google Drive link for report and presentation slides:</h5>
-<p>https://drive.google.com/open?id=1bz77-sB9Yz0z30LOZpGTAcr8wTVKrVWP</p>
+<p>https://drive.google.com/drive/folders/1bz77-sB9Yz0z30LOZpGTAcr8wTVKrVWP?usp=sharing</p>
