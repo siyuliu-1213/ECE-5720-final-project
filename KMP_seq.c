@@ -20,15 +20,15 @@
 void computeLPS(char* p, int* lps, int n);
 
 int main(int argc, char *argv[]) {
-    int n_p = 4;
-    int n_s = 5 * 1e8;
+    int n_p;
+    int n_s;
     double time;
     struct timespec start, end;
 
-    // printf( "please put in the length of the haystack:\n" );
-    // scanf( "%d", &n_s );
-    // printf( "please put in the length of the needle:\n" );
-    // scanf( "%d", &n_p );
+    printf( "please put in the length of the haystack:\n" );
+    scanf( "%d", &n_s );
+    printf( "please put in the length of the needle:\n" );
+    scanf( "%d", &n_p );
 
     // Read the target and pattern from a pre-written random-generated
     // composed of lowercase letter from a - z
@@ -42,18 +42,15 @@ int main(int argc, char *argv[]) {
     int* lps = (int *) malloc(n_p * sizeof(int));
     computeLPS(p, lps, n_p);
 
-    // printf("%s", p);
     // KMP algorithm
     int id_p = 0, id_s = 0;
     while(id_s < n_s) {
-        // if(id_s % 100 == 0) printf("index of s reaches %d \n", id_s);
         if(s[id_s] == p[id_p]) {
             id_s++;
             id_p++;
         }
 
         if(id_p == n_p) {
-            // printf("Found matching at index %d \n", id_s - id_p);
             id_p = lps[id_p - 1];
         }
 

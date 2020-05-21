@@ -24,14 +24,6 @@
 
 __global__ void match(char *dev_s, char *dev_p, int *dev_lps, uint *dev_res_map)
 {
-    // __shared__ char p_local[n_p];
-    // __shared__ int lps_local[n_p];
-    // for(int j = threadIdx.x; j < n_p; j += blockDim.x) {
-    //     p_local[j] = dev_p[j]; // load coalesced
-    //     lps_local[j] = dev_lps[j]; // load coalesced
-    // }
-    // __syncthreads();
-
     int i = blockIdx.x*blockDim.x + threadIdx.x;
     // calculate the start point and end point
     int start = i * n_s / (M * N);
@@ -97,7 +89,6 @@ int main() {
     fgets(p, n_p + 1, fptr);
     fclose(fptr);
     for(int i = n_s; i < n_s + n_p - 1; i++) s[i] = p[1] + 1;
-    // printf("%s\n", p);
 
     cudaEvent_t start, stop;
     cudaEventCreate(&start);
@@ -124,10 +115,6 @@ int main() {
     float milliseconds = 0;
     cudaEventElapsedTime(&milliseconds, start, stop);
     printf("Total time is %lf\n", milliseconds);
-
-    // for(int i = 0; i < n_s; i++) {
-    //     if((res_map[i / 32] & (1 << (i % 32))) != 0) printf("Found matching at index %d\n", i);
-    // }
 
     cudaFree(dev_s); cudaFree(dev_p); cudaFree(dev_lps); cudaFree(dev_res_map);
     free(s); free(p); free(lps); free(res_map);

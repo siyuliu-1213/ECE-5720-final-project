@@ -1,3 +1,14 @@
+/*
+ * ECE 5720 Parallel Computing final project
+ * Sequential substring matching
+ * Shicong Li sl3295
+ * Siyu Liu sl3282
+ * Cornell University
+ *
+ * Compile : mpicc KMP_m.c -o KMP_m
+ * Run     : mpirun -np 64 ./KMP_m --mca opal_warn_on_missing_libcuda 0
+ */
+
 #include "mpi.h"
 #include <stdio.h>
 #include <stdint.h>
@@ -8,13 +19,12 @@
 
 void computeLPS(char* p, int* lps, int n);
 void match(char* s, char* p, int* lps, int n_s, int n_p, int start);
-void print(char* s, int rank, int len);
 
 int main(int argc, char *argv[]) {
     char* s;
     char* p;
-    long n_s = 1e6;
-    int n_p = 7;
+    long n_s;
+    int n_p;
     int* lps;
     double start_time, end_time, time;
     int numtasks, rank;
@@ -31,10 +41,10 @@ int main(int argc, char *argv[]) {
 
     if(rank == 0) {
         // Get input
-        // printf( "please put in the length of the haystack:\n" );
-        // scanf( "%ld", &n_s );
-        // printf( "please put in the length of the needle:\n" );
-        // scanf( "%d", &n_p );
+        printf( "please put in the length of the haystack:\n" );
+        scanf( "%ld", &n_s );
+        printf( "please put in the length of the needle:\n" );
+        scanf( "%d", &n_p );
 
         // Initialization
         s = (char *) malloc(n_s * sizeof(char));
@@ -68,8 +78,6 @@ int main(int argc, char *argv[]) {
             else MPI_Isend(&s[start_p], end_p - start_p + n_p - 1, MPI_CHAR, i, i, MPI_COMM_WORLD, &reqs[i - 1]);
         }
 
-        // print(p, rank, n_p);
-        // print(s, rank, end - start + n_p - 1);
         match(s, p, lps, end - start + n_p - 1, n_p, start);
         MPI_Waitall(numtasks - 1, reqs, stats);
         free(s);
@@ -84,15 +92,11 @@ int main(int argc, char *argv[]) {
         if(rank == numtasks - 1) {
             MPI_Irecv(s_local, end - start, MPI_CHAR, 0, rank, MPI_COMM_WORLD, &reqs);
             MPI_Wait(&reqs, &stats);
-            // print(p, rank, n_p);
-            // print(s_local, rank, end - start);
             match(s_local, p, lps, end - start, n_p, start);
         }
         else {
             MPI_Irecv(s_local, end - start + n_p - 1, MPI_CHAR, 0, rank, MPI_COMM_WORLD, &reqs);
             MPI_Wait(&reqs, &stats);
-            // print(p, rank, n_p);
-            // print(s_local, rank, end - start + n_p - 1);
             match(s_local, p, lps, end - start + n_p - 1, n_p, start);
         }
         free(s_local);
@@ -152,10 +156,4 @@ void match(char* s, char* p, int* lps, int n_s, int n_p, int start) {
             else id_s++;
         }
     }
-}
-
-void print(char* s, int rank, int len) {
-    printf("Process %d is addressing: ", rank);
-    for(int i = 0; i < len; i++) printf("%c", s[i]);
-    printf("\n");
 }
