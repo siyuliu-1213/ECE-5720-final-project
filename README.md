@@ -15,3 +15,6 @@ The code repository for Cornell ECE 5720 final project.
 <p>The CUDA strategy parrallelism implementation for KMP algorithm.</p>
 <p>Compile : /usr/local/cuda-10.1/bin/nvcc -arch=compute_52 -o KMP_cuda KMP_cuda.cu
 <p>Run     : ./KMP_cuda</p>
+
+<h5>Google Drive link for report and presentation slides:</h5>
+<p>https://drive.google.com/open?id=1bz77-sB9Yz0z30LOZpGTAcr8wTVKrVWP</p>
